@@ -244,6 +244,7 @@ struct TitlebarControlsView: View {
     @AppStorage(ShortcutHintDebugSettings.titlebarHintXKey) private var titlebarShortcutHintXOffset = ShortcutHintDebugSettings.defaultTitlebarHintX
     @AppStorage(ShortcutHintDebugSettings.titlebarHintYKey) private var titlebarShortcutHintYOffset = ShortcutHintDebugSettings.defaultTitlebarHintY
     @AppStorage(ShortcutHintDebugSettings.alwaysShowHintsKey) private var alwaysShowShortcutHints = ShortcutHintDebugSettings.defaultAlwaysShowHints
+    @AppStorage(AnimationSettings.transitionAnimationsEnabledKey) private var transitionAnimationsEnabled = AnimationSettings.defaultTransitionAnimationsEnabled
     @State private var shortcutRefreshTick = 0
     @StateObject private var modifierKeyMonitor = TitlebarShortcutHintModifierMonitor()
     private let titlebarHintRightSafetyShift: CGFloat = 10
@@ -469,7 +470,7 @@ struct TitlebarControlsView: View {
                     .offset(x: item.leftEdge, y: yOffset)
             }
         }
-        .animation(.easeInOut(duration: 0.14), value: shouldShowTitlebarShortcutHints)
+        .animation(transitionAnimationsEnabled ? .easeInOut(duration: 0.14) : nil, value: shouldShowTitlebarShortcutHints)
         .transition(.opacity)
         .allowsHitTesting(false)
     }

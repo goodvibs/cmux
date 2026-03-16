@@ -18,6 +18,7 @@ struct WorkspaceContentView: View {
     @State private var config = WorkspaceContentView.resolveGhosttyAppearanceConfig(reason: "stateInit")
     @Environment(\.colorScheme) private var colorScheme
     @EnvironmentObject var notificationStore: TerminalNotificationStore
+    @AppStorage(AnimationSettings.splitAnimationsEnabledKey) private var splitAnimationsEnabled = AnimationSettings.defaultSplitAnimationsEnabled
 
     static func panelVisibleInUI(
         isWorkspaceVisible: Bool,
@@ -113,8 +114,12 @@ struct WorkspaceContentView: View {
         .id(splitZoomRenderIdentity)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onAppear {
+            workspace.bonsplitController.configuration.appearance.enableAnimations = splitAnimationsEnabled
             syncBonsplitNotificationBadges()
             refreshGhosttyAppearanceConfig(reason: "onAppear")
+        }
+        .onChange(of: splitAnimationsEnabled) { _, newValue in
+            workspace.bonsplitController.configuration.appearance.enableAnimations = newValue
         }
         .onChange(of: notificationStore.notifications) { _, _ in
             syncBonsplitNotificationBadges()

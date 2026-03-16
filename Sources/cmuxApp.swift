@@ -2886,6 +2886,49 @@ enum AppearanceSettings {
     }
 }
 
+enum AnimationSettings {
+    // Split pane creation (Bonsplit SplitAnimator)
+    static let splitAnimationsEnabledKey = "splitAnimationsEnabled"
+    static let defaultSplitAnimationsEnabled = false
+
+    // SwiftUI transitions (sidebar, overlays, modals, update pill)
+    static let transitionAnimationsEnabledKey = "transitionAnimationsEnabled"
+    static let defaultTransitionAnimationsEnabled = false
+
+    // Pane focus flash
+    static let focusFlashEnabledKey = "focusFlashEnabled"
+    static let defaultFocusFlashEnabled = false
+
+    static func splitAnimationsEnabled(defaults: UserDefaults = .standard) -> Bool {
+        defaults.object(forKey: splitAnimationsEnabledKey) as? Bool ?? defaultSplitAnimationsEnabled
+    }
+
+    static func transitionAnimationsEnabled(defaults: UserDefaults = .standard) -> Bool {
+        defaults.object(forKey: transitionAnimationsEnabledKey) as? Bool ?? defaultTransitionAnimationsEnabled
+    }
+
+    static func focusFlashEnabled(defaults: UserDefaults = .standard) -> Bool {
+        if defaults.object(forKey: focusFlashEnabledKey) != nil {
+            return defaults.bool(forKey: focusFlashEnabledKey)
+        }
+        // Migrate from legacy Pane Flash setting - only if user had explicitly set it
+        if let legacy = defaults.object(forKey: NotificationPaneFlashSettings.enabledKey) as? Bool {
+            defaults.set(legacy, forKey: focusFlashEnabledKey)
+            return legacy
+        }
+        // New user or legacy key never set: use new default
+        return defaultFocusFlashEnabled
+    }
+
+    static func withOptionalTransitionAnimation<Result>(_ animation: Animation?, body: () -> Result) -> Result {
+        if transitionAnimationsEnabled(), let animation {
+            return withAnimation(animation, body)
+        } else {
+            return withTransaction(Transaction(animation: nil), body)
+        }
+    }
+}
+
 enum AppLanguage: String, CaseIterable, Identifiable {
     case system
     case en
@@ -3109,7 +3152,9 @@ struct SettingsView: View {
     @AppStorage(NotificationSoundSettings.customCommandKey) private var notificationCustomCommand = NotificationSoundSettings.defaultCustomCommand
     @AppStorage(NotificationBadgeSettings.dockBadgeEnabledKey) private var notificationDockBadgeEnabled = NotificationBadgeSettings.defaultDockBadgeEnabled
     @AppStorage(NotificationPaneRingSettings.enabledKey) private var notificationPaneRingEnabled = NotificationPaneRingSettings.defaultEnabled
-    @AppStorage(NotificationPaneFlashSettings.enabledKey) private var notificationPaneFlashEnabled = NotificationPaneFlashSettings.defaultEnabled
+    @AppStorage(AnimationSettings.splitAnimationsEnabledKey) private var splitAnimationsEnabled = AnimationSettings.defaultSplitAnimationsEnabled
+    @AppStorage(AnimationSettings.transitionAnimationsEnabledKey) private var transitionAnimationsEnabled = AnimationSettings.defaultTransitionAnimationsEnabled
+    @AppStorage(AnimationSettings.focusFlashEnabledKey) private var focusFlashEnabled = AnimationSettings.defaultFocusFlashEnabled
     @AppStorage(MenuBarExtraSettings.showInMenuBarKey) private var showMenuBarExtra = MenuBarExtraSettings.defaultShowInMenuBar
     @AppStorage(QuitWarningSettings.warnBeforeQuitKey) private var warnBeforeQuitShortcut = QuitWarningSettings.defaultWarnBeforeQuit
     @AppStorage(CommandPaletteRenameSelectionSettings.selectAllOnFocusKey)
@@ -3611,20 +3656,6 @@ struct SettingsView: View {
                         SettingsCardDivider()
 
                         SettingsCardRow(
-                            String(localized: "settings.notifications.paneFlash.title", defaultValue: "Pane Flash"),
-                            subtitle: String(localized: "settings.notifications.paneFlash.subtitle", defaultValue: "Briefly flash a blue outline when cmux highlights a pane.")
-                        ) {
-                            Toggle("", isOn: $notificationPaneFlashEnabled)
-                                .labelsHidden()
-                                .controlSize(.small)
-                                .accessibilityLabel(
-                                    String(localized: "settings.notifications.paneFlash.title", defaultValue: "Pane Flash")
-                                )
-                        }
-
-                        SettingsCardDivider()
-
-                        SettingsCardRow(
                             "Desktop Notifications",
                             subtitle: notificationPermissionSubtitle
                         ) {
@@ -3906,6 +3937,40 @@ struct SettingsView: View {
                                 .controlSize(.small)
                         }
                         .disabled(sidebarHideAllDetails)
+                    }
+
+                    SettingsSectionHeader(title: String(localized: "settings.section.animations", defaultValue: "Animations"))
+                    SettingsCard {
+                        SettingsCardRow(
+                            String(localized: "settings.animations.split.title", defaultValue: "Split Animations"),
+                            subtitle: String(localized: "settings.animations.split.subtitle", defaultValue: "Animate when creating new split panes.")
+                        ) {
+                            Toggle("", isOn: $splitAnimationsEnabled)
+                                .labelsHidden()
+                                .controlSize(.small)
+                        }
+
+                        SettingsCardDivider()
+
+                        SettingsCardRow(
+                            String(localized: "settings.animations.transition.title", defaultValue: "Transition Animations"),
+                            subtitle: String(localized: "settings.animations.transition.subtitle", defaultValue: "Animate sidebar, overlays, and UI transitions.")
+                        ) {
+                            Toggle("", isOn: $transitionAnimationsEnabled)
+                                .labelsHidden()
+                                .controlSize(.small)
+                        }
+
+                        SettingsCardDivider()
+
+                        SettingsCardRow(
+                            String(localized: "settings.animations.focusFlash.title", defaultValue: "Focus Flash"),
+                            subtitle: String(localized: "settings.animations.focusFlash.subtitle", defaultValue: "Briefly flash a blue outline when cmux highlights a pane.")
+                        ) {
+                            Toggle("", isOn: $focusFlashEnabled)
+                                .labelsHidden()
+                                .controlSize(.small)
+                        }
                     }
 
                     SettingsSectionHeader(title: String(localized: "settings.section.workspaceColors", defaultValue: "Workspace Colors"))
@@ -4515,7 +4580,7 @@ struct SettingsView: View {
         .onReceive(NotificationCenter.default.publisher(for: SettingsNavigationRequest.notificationName)) { notification in
             guard let target = SettingsNavigationRequest.target(from: notification) else { return }
             DispatchQueue.main.async {
-                withAnimation(.easeInOut(duration: 0.2)) {
+                AnimationSettings.withOptionalTransitionAnimation(.easeInOut(duration: 0.2)) {
                     proxy.scrollTo(target, anchor: .top)
                 }
             }
@@ -4616,7 +4681,9 @@ struct SettingsView: View {
         notificationCustomCommand = NotificationSoundSettings.defaultCustomCommand
         notificationDockBadgeEnabled = NotificationBadgeSettings.defaultDockBadgeEnabled
         notificationPaneRingEnabled = NotificationPaneRingSettings.defaultEnabled
-        notificationPaneFlashEnabled = NotificationPaneFlashSettings.defaultEnabled
+        splitAnimationsEnabled = AnimationSettings.defaultSplitAnimationsEnabled
+        transitionAnimationsEnabled = AnimationSettings.defaultTransitionAnimationsEnabled
+        focusFlashEnabled = AnimationSettings.defaultFocusFlashEnabled
         showMenuBarExtra = MenuBarExtraSettings.defaultShowInMenuBar
         warnBeforeQuitShortcut = QuitWarningSettings.defaultWarnBeforeQuit
         commandPaletteRenameSelectAllOnFocus = CommandPaletteRenameSelectionSettings.defaultSelectAllOnFocus
