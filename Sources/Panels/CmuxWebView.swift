@@ -1403,7 +1403,7 @@ final class CmuxWebView: WKWebView {
                     return
                 }
 
-                if let linkURL {
+                if linkURL != nil {
                     self.debugInspectElementsAtPoint(point, traceID: traceID, kind: "image")
                     self.runContextMenuFallback(
                         action: fallback.action,
