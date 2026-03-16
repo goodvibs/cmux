@@ -5857,7 +5857,7 @@ struct ContentView: View {
             commandPaletteScrollTargetIndex = selectedIndex
         }
         if animated {
-            withAnimation(.easeOut(duration: 0.1)) {
+            AnimationSettings.withOptionalTransitionAnimation(.easeOut(duration: 0.1)) {
                 assignTarget()
             }
         } else {
@@ -9848,8 +9848,8 @@ private struct SidebarFooterIconButtonStyleBody: View {
             .onHover { hovering in
                 isHovered = hovering
             }
-            .animation(.easeOut(duration: 0.12), value: isHovered)
-            .animation(.easeOut(duration: 0.08), value: configuration.isPressed)
+            .animation(AnimationSettings.transitionAnimationsEnabled() ? .easeOut(duration: 0.12) : nil, value: isHovered)
+            .animation(AnimationSettings.transitionAnimationsEnabled() ? .easeOut(duration: 0.08) : nil, value: configuration.isPressed)
     }
 }
 
@@ -10345,7 +10345,7 @@ private struct TabItemView: View, Equatable {
                             .transition(.opacity)
                     }
                 }
-                .animation(.easeInOut(duration: 0.14), value: showsModifierShortcutHints || alwaysShowShortcutHints)
+                .animation(AnimationSettings.transitionAnimationsEnabled() ? .easeInOut(duration: 0.14) : nil, value: showsModifierShortcutHints || alwaysShowShortcutHints)
                 .frame(width: workspaceHintSlotWidth, height: 16, alignment: .trailing)
             }
 
@@ -10510,9 +10510,9 @@ private struct TabItemView: View, Equatable {
                     .truncationMode(.tail)
             }
         }
-        .animation(.easeInOut(duration: 0.2), value: tab.logEntries.count)
-        .animation(.easeInOut(duration: 0.2), value: tab.progress != nil)
-        .animation(.easeInOut(duration: 0.2), value: tab.metadataBlocks.count)
+        .animation(AnimationSettings.transitionAnimationsEnabled() ? .easeInOut(duration: 0.2) : nil, value: tab.logEntries.count)
+        .animation(AnimationSettings.transitionAnimationsEnabled() ? .easeInOut(duration: 0.2) : nil, value: tab.progress != nil)
+        .animation(AnimationSettings.transitionAnimationsEnabled() ? .easeInOut(duration: 0.2) : nil, value: tab.metadataBlocks.count)
         .padding(.horizontal, 10)
         .padding(.vertical, 8)
         .background(
@@ -11348,7 +11348,7 @@ private struct SidebarMetadataRows: View {
             if shouldShowToggle {
                 Button(isExpanded ? String(localized: "sidebar.metadata.showLess", defaultValue: "Show less") : String(localized: "sidebar.metadata.showMore", defaultValue: "Show more")) {
                     onFocus()
-                    withAnimation(.easeInOut(duration: 0.15)) {
+                    AnimationSettings.withOptionalTransitionAnimation(.easeInOut(duration: 0.15)) {
                         isExpanded.toggle()
                     }
                 }
@@ -11501,7 +11501,7 @@ private struct SidebarMetadataMarkdownBlocks: View {
             if shouldShowToggle {
                 Button(isExpanded ? String(localized: "sidebar.metadata.showLessDetails", defaultValue: "Show less details") : String(localized: "sidebar.metadata.showMoreDetails", defaultValue: "Show more details")) {
                     onFocus()
-                    withAnimation(.easeInOut(duration: 0.15)) {
+                    AnimationSettings.withOptionalTransitionAnimation(.easeInOut(duration: 0.15)) {
                         isExpanded.toggle()
                     }
                 }

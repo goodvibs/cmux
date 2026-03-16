@@ -144,7 +144,7 @@ struct SurfaceSearchOverlay: View {
                             y: centerPos.y + value.translation.height
                         )
                         let newCorner = closestCorner(to: newCenter, in: geo.size)
-                        withAnimation(.easeOut(duration: 0.2)) {
+                        AnimationSettings.withOptionalTransitionAnimation(.easeOut(duration: 0.2)) {
                             corner = newCorner
                             dragOffset = .zero
                         }

@@ -54467,6 +54467,125 @@
         }
       }
     },
+    "settings.section.animations": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Animations"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "アニメーション"
+          }
+        }
+      }
+    },
+    "settings.animations.split.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Split Animations"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "分割アニメーション"
+          }
+        }
+      }
+    },
+    "settings.animations.split.subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Animate when creating new split panes."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "新しい分割ペインを作成するときにアニメーションを表示します。"
+          }
+        }
+      }
+    },
+    "settings.animations.transition.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Transition Animations"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "トランジションアニメーション"
+          }
+        }
+      }
+    },
+    "settings.animations.transition.subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Animate sidebar, overlays, and UI transitions."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "サイドバー、オーバーレイ、UIトランジションをアニメーション表示します。"
+          }
+        }
+      }
+    },
+    "settings.animations.focusFlash.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Focus Flash"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "フォーカスフラッシュ"
+          }
+        }
+      }
+    },
+    "settings.animations.focusFlash.subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Briefly flash a blue outline when cmux highlights a pane."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "cmuxがペインをハイライトするときに青い枠線を短くフラッシュします。"
+          }
+        }
+      }
+    },
     "settings.section.automation": {
       "extractionState": "manual",
       "localizations": {

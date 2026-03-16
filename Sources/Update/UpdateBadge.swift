@@ -47,7 +47,7 @@ fileprivate struct ProgressRingView: View {
                 .trim(from: 0, to: progress)
                 .stroke(Color.primary, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
                 .rotationEffect(.degrees(-90))
-                .animation(.easeInOut(duration: 0.2), value: progress)
+                .animation(AnimationSettings.transitionAnimationsEnabled() ? .easeInOut(duration: 0.2) : nil, value: progress)
         }
     }
 }

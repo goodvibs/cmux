@@ -1075,7 +1075,7 @@ final class Workspace: Identifiable, ObservableObject {
     ) -> BonsplitConfiguration.Appearance {
         BonsplitConfiguration.Appearance(
             splitButtonTooltips: Self.currentSplitButtonTooltips(),
-            enableAnimations: false,
+            enableAnimations: AnimationSettings.splitAnimationsEnabled(),
             chromeColors: .init(
                 backgroundHex: Self.bonsplitChromeHex(
                     backgroundColor: backgroundColor,

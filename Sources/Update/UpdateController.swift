@@ -234,7 +234,7 @@ class UpdateController {
             guard self.viewModel.overrideState == nil,
                   case .notFound = self.viewModel.state else { return }
 
-            withAnimation(.easeInOut(duration: 0.25)) {
+            AnimationSettings.withOptionalTransitionAnimation(.easeInOut(duration: 0.25)) {
                 self.recordUITestTimestamp(key: "noUpdateHiddenAt")
                 self.viewModel.state = .idle
             }

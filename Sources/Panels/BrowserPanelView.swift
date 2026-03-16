@@ -150,8 +150,8 @@ private struct OmnibarAddressButtonStyleBody: View {
             .onHover { hovering in
                 isHovered = hovering
             }
-            .animation(.easeOut(duration: 0.12), value: isHovered)
-            .animation(.easeOut(duration: 0.08), value: configuration.isPressed)
+            .animation(AnimationSettings.transitionAnimationsEnabled() ? .easeOut(duration: 0.12) : nil, value: isHovered)
+            .animation(AnimationSettings.transitionAnimationsEnabled() ? .easeOut(duration: 0.08) : nil, value: configuration.isPressed)
     }
 }
 

@@ -2151,7 +2151,7 @@ final class BrowserPanel: Panel, ObservableObject {
     }
 
     func triggerFlash() {
-        guard NotificationPaneFlashSettings.isEnabled() else { return }
+        guard AnimationSettings.focusFlashEnabled() else { return }
         focusFlashToken &+= 1
     }
 
